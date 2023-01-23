@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { borrowBook, deleteBook } from "../helpers/axiosHelper";
 import { toast } from "react-toastify";
 
 const BookCard = ({ book, fetchBooks }) => {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const u = JSON.parse(sessionStorage.getItem("user"));
+    if (u) {
+      setUser(u);
+    }
+  }, []);
+
+  console.log(user);
   const handleBorrow = async (bookId) => {
     if (bookId) {
       const { status, message } = await borrowBook(bookId);
@@ -40,14 +50,17 @@ const BookCard = ({ book, fetchBooks }) => {
           >
             Borrow
           </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              handleDelete(book._id);
-            }}
-          >
-            Delete
-          </Button>
+
+          {user?.role === "teacher" && (
+            <Button
+              variant="danger"
+              onClick={() => {
+                handleDelete(book._id);
+              }}
+            >
+              Delete
+            </Button>
+          )}
         </div>
       </Card.Body>
     </Card>

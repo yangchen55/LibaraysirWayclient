@@ -45,7 +45,7 @@ const Sidebar = ({ currentUser }) => {
 
           <p className="title">USER</p>
           <li>
-            <Link to="/" className="link">
+            <Link to="/profile" className="link">
               <i className="fa-solid fa-user"></i>
               <span>Profile</span>
             </Link>

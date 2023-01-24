@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Card } from "react-bootstrap";
-import { borrowBook, deleteBook } from "../helpers/axiosHelper";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { borrowedAction, deleteBookAction } from "../redux/book/BookAction";
 
 const BookCard = ({ book, fetchBooks }) => {
-  const [user, setUser] = useState({});
-
-  useEffect(() => {
-    const u = JSON.parse(sessionStorage.getItem("user"));
-    if (u) {
-      setUser(u);
-    }
-  }, []);
-
-  console.log(user);
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.user);
   const handleBorrow = async (bookId) => {
     if (bookId) {
-      const { status, message } = await borrowBook(bookId);
-      status === "success" ? toast.success(message) : toast.warning(message);
+      dispatch(borrowedAction(bookId));
+      // const { status, message } = await borrowBook(bookId);
+      // status === "success" ? toast.success(message) : toast.warning(message);
     }
   };
   const handleDelete = async (bookId) => {
@@ -27,9 +20,7 @@ const BookCard = ({ book, fetchBooks }) => {
       )
     ) {
       if (bookId) {
-        const { status, message } = await deleteBook(bookId);
-
-        toast[status](message) && fetchBooks();
+        dispatch(deleteBookAction(bookId));
       }
     }
   };
@@ -51,7 +42,7 @@ const BookCard = ({ book, fetchBooks }) => {
             Borrow
           </Button>
 
-          {user?.role === "teacher" && (
+          {userInfo?.role === "teacher" && (
             <Button
               variant="danger"
               onClick={() => {

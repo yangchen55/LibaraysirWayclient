@@ -1,26 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {
-  Col,
-  Row,
-  Container,
-  Button,
-  Modal,
-  Form,
-  Toast,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import { Col, Row, Container, Button, Modal, Form } from "react-bootstrap";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import { updatePassword } from "../helpers/axiosHelper";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const [user, setUser] = useState();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState([]);
-
-  useEffect(() => {
-    const u = JSON.parse(sessionStorage.getItem("user"));
-    setUser(u);
-  }, []);
+  const { userInfo } = useSelector((state) => state.user);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -92,25 +80,27 @@ const Profile = () => {
               <ul>
                 <li>
                   <strong>Profile ID: </strong>
-                  {user?._id}
+                  {userInfo?._id}
                 </li>
                 <li>
                   <strong>Name:</strong>
-                  {`${user?.fName} ${user?.lName}`}
+                  {`${userInfo?.fName} ${userInfo?.lName}`}
                 </li>
                 <li>
                   <strong>Email:</strong>
-                  {user?.email}
+                  {userInfo?.email}
                 </li>
 
                 <li>
                   <strong>status: </strong>
                   <span
                     className={
-                      user?.status === "active" ? "text-success" : "text-danger"
+                      userInfo?.status === "active"
+                        ? "text-success"
+                        : "text-danger"
                     }
                   >
-                    {user?.status}
+                    {userInfo?.status}
                   </span>
                 </li>
               </ul>

@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react"
-import { Container, Row } from "react-bootstrap"
-import BooksList from "../components/BooksList"
-import DashboardLayout from "../components/layout/DashboardLayout"
-import { getBooks } from "../helpers/axiosHelper"
+import React, { useEffect } from "react";
+import { Container, Row, Spinner } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import BooksList from "../components/BooksList";
+import DashboardLayout from "../components/layout/DashboardLayout";
+import { getBooksAction } from "../redux/book/BookAction";
 
 const Books = () => {
-  const [books, setBooks] = useState([])
-
-  const fetchAllBooks = async () => {
-    const response = await getBooks()
-
-    setBooks(response.books)
-  }
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.book);
 
   useEffect(() => {
-    fetchAllBooks()
-  }, [])
+    dispatch(getBooksAction());
+  }, [dispatch]);
 
   return (
     <DashboardLayout>
       <Container>
         <Row className="p-5">
-          <BooksList books={books} fetchBooks={fetchAllBooks} />
+          {isLoading && <Spinner animation="border" />}
+          <BooksList />
         </Row>
       </Container>
     </DashboardLayout>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;

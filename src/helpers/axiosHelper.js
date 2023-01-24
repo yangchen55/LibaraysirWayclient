@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Next } from "react-bootstrap/esm/PageItem";
 
 const baseApiUrl =
   process.env === "production" ? "/api/v1" : process.env.REACT_APP_ROOT_URL;

@@ -1,35 +1,34 @@
-import React, { useState } from "react"
-import { Button, Col, Container, Form, Row } from "react-bootstrap"
-import { InputeField } from "../components/InputeField/InputeField"
-import { DefaultLayout } from "../components/layout/DefaultLayout"
-import { Link, useNavigate } from "react-router-dom"
-import { loginUser } from "../helpers/axiosHelper"
-import { toast } from "react-toastify"
+import React, { useState, useEffect } from "react";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
+import { InputeField } from "../components/InputeField/InputeField";
+import { DefaultLayout } from "../components/layout/DefaultLayout";
+import { Link, useNavigate } from "react-router-dom";
+import { loginAction } from "../redux/user/UserAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
-  const [formData, setFormData] = useState({})
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const { isLoading, isLoggedIn } = useSelector((state) => state.user);
+  const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    isLoggedIn && navigate("/books");
+  }, [isLoggedIn, navigate]);
 
   const handleOnChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
 
     setFormData({
       ...formData,
       [name]: value,
-    })
-  }
+    });
+  };
 
   const handleOnSubmit = async (e) => {
-    e.preventDefault()
-
-    const { status, message, user } = await loginUser(formData)
-    toast[status](message)
-
-    if (status === "success") {
-      sessionStorage.setItem("user", JSON.stringify(user))
-      navigate("/books")
-    }
-  }
+    e.preventDefault();
+    dispatch(loginAction(formData));
+  };
 
   const inputs = [
     {
@@ -47,7 +46,7 @@ const Login = () => {
       placeholder: "********",
       required: true,
     },
-  ]
+  ];
   return (
     <DefaultLayout>
       <Container>
@@ -64,6 +63,7 @@ const Login = () => {
 
                 <div>
                   <Button variant="primary" type="submit">
+                    <span>{isLoading && <Spinner animation="border" />}</span>
                     Login
                   </Button>
                 </div>
@@ -85,7 +85,7 @@ const Login = () => {
         </Row>
       </Container>
     </DefaultLayout>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
